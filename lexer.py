@@ -36,11 +36,10 @@ class CoolPyLexer():
 
         self.tokens = [
             'TYPE', 'ID',
-            'INTEGER', 'STRING', 'BOOL',
+            'INTEGER', 'STRING', 'BOOLEAN',
             'ACTION',
             'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'COLON', 'COMMA', 'DOT', 'SEMICOLON', 'AT',
             'PLUS', 'MINUS', 'MULTIPLY', 'DIVIDE', 'EQ', 'LT', 'LTEQ', 'ASSIGN', 'INT_COMP', 'NOT',
-            'COMMENT',
         ] + list(self.reserved.values())
 
         self.ignored = [' ', '\t']
@@ -92,7 +91,7 @@ class CoolPyLexer():
         token.value = token.value[1:-1]
         return token
 
-    def t_BOOL(self, token):
+    def t_BOOLEAN(self, token):
         r'true|false'
         token.value = True if token.value == 'true' else False
         return token

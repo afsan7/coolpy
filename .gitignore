@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 
 lextab.py
+yacctab.py
