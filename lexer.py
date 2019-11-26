@@ -287,11 +287,11 @@ if __name__ == '__main__':
 
     import sys
     if len(sys.argv) != 2:
-        print('Usage: python lexer.py program.cl')
+        print('Usage: python lexer.py <file_name.cl>')
         exit()
     elif not str(sys.argv[1]).endswith('.cl'):
         print('Source code files must end with .cl extension.')
-        print('Usage: python lexer.py program.cl')
+        print('Usage: python lexer.py <file_name.cl>')
         exit()
 
     input_file = sys.argv[1]

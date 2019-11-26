@@ -722,7 +722,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if not str(sys.argv[1]).endswith('.cl'):
             print('Source code files must end with .cl extension.')
-            print('Usage: ./parser.py program.cl')
+            print('Usage: python parser.py <file_name.cl>')
             exit()
 
         input_file = sys.argv[1]
@@ -735,14 +735,6 @@ if __name__ == '__main__':
 
         print_readable_ast(parse_result)
     else:
-        print('coolpy Parser: Interactive Mode.\r\n')
-        while True:
-            try:
-                s = input('cool >>> ')
-            except EOFError:
-                break
-            if not s:
-                continue
-            result = parser.parse(s)
-            if result is not None:
-                print(result)
+        print('Provide the path to the Cool program source file.')
+        print('Usage: python parser.py <file_name.cl>')
+        exit()
