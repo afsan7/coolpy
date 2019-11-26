@@ -4,7 +4,7 @@ from ast import Self
 def print_readable_ast(tree, level = 0, inline = False):
 
     def indent(source_string, level = 1, lstrip_first = False):
-        indentation = "    "
+        indentation = '    '
         out = '\n'.join((level * indentation) + i for i in source_string.splitlines())
         if lstrip_first:
             return out.lstrip()
@@ -21,7 +21,7 @@ def print_readable_ast(tree, level = 0, inline = False):
         else:
             print(indent(f'{tree.class_name}(', level, inline))
             for key, value in attrs:
-                if key == "class_name":
+                if key == 'class_name':
                     continue
                 print(indent(key + '=', level + 1), end='')
                 print_readable_ast(value, level + 1, True)
