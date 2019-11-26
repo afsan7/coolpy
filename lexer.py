@@ -1,6 +1,42 @@
 from ply import lex
 
 class CoolPyLexer():
+    '''
+    CoolPyLexer provides methods to tokenize the input Cool source code.
+    
+    ...
+    
+    Attributes
+    ----------
+    lexer : Lexer
+        An instance of Lexer used to access all the public methods of Lexer.
+    reserved : dict
+        A dictionary of the reserved keywords of the Cool programming language.
+    tokens : list
+        A list of syntax tokens of the Cool programming language.
+    last_token : 
+        The last token returned when iterated over an instance of PyCoolLexer (after tokenization).  
+    build_lexer : bool
+        A flag to determine whether the lexer should be built upon initialization or not.
+    _debug : bool
+        A flag to determine whether 'debug' mode should be on or not.
+    _optimize : bool
+        A flag to determine whether 'optimize' mode should be on or not.
+    _outputdir : str
+        Output directory for the lexer's output.
+    _debuglog : str
+        Path to the lexer's debug log.
+    _errorlog : str
+        Path to the lexer's error log.
+
+    Methods
+    -------
+    build(**kwargs)
+        Builds the CoolPyLexer instance with lex.lex().
+    input(source_code)
+        A wrapper for Lexer's input(source_code: str) method. Tokenizes the Cool program 
+        provided as the input.
+    '''
 
     def __init__(self,
                  build_lexer = True,
@@ -10,9 +46,26 @@ class CoolPyLexer():
                  outputdir   = '',
                  debuglog    = None,
                  errorlog    = None):
+        '''
+        Paramters
+        ---------
+        build_lexer : bool, optional
+            A flag to determine whether the lexer should be built upon initialization or not.
+        debug : bool, optional
+            A flag to determine whether 'debug' mode should be on or not.
+        optimize : bool, optional
+            A flag to determine whether 'optimize' mode should be on or not.
+        outputdir : str, optional
+            Output directory for the lexer's output.
+        debuglog : str, optional
+            Path to the lexer's debug log. By default, the lexer logs to stderr.
+        errorlog : str, optional
+            Path to the lexer's error log. By default, the lexer logs to stderr.
+        '''
 
         self.lexer = None
 
+        # Dictionary of reserved keywords of the Cool programming language.
         self.reserved = {
             'class': 'CLASS',
             'inherits': 'INHERITS',
@@ -34,6 +87,7 @@ class CoolPyLexer():
             'isvoid': 'ISVOID',
         }
 
+        # List of token names.
         self.tokens = [
             'TYPE', 'ID',
             'INTEGER', 'STRING', 'BOOLEAN',
@@ -41,8 +95,6 @@ class CoolPyLexer():
             'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'COLON', 'COMMA', 'DOT', 'SEMICOLON', 'AT',
             'PLUS', 'MINUS', 'MULTIPLY', 'DIVIDE', 'EQ', 'LT', 'LTEQ', 'ASSIGN', 'INT_COMP', 'NOT',
         ] + list(self.reserved.values())
-
-        self.ignored = [' ', '\t']
 
         self.last_token = None
 
@@ -60,7 +112,8 @@ class CoolPyLexer():
                        outputdir = outputdir, 
                        debuglog  = debuglog,
                        errorlog  = errorlog)
-
+    
+    # Regular expression rules for simple tokens.
     t_LPAREN = r'\('
     t_RPAREN = r'\)'
     t_LBRACE = r'\{'
@@ -81,6 +134,7 @@ class CoolPyLexer():
     t_ASSIGN = r'\<\-'
     t_ACTION = r'\=\>'
 
+    # Regular expression rules with some action code.
     def t_INTEGER(self, token):
         r'[0-9]+'
         token.value = int(token.value)
@@ -108,6 +162,7 @@ class CoolPyLexer():
         r'[A-Z][A-Za-z0-9_]*'
         return token
 
+    # ID ~ Identifier
     def t_ID(self, token):
         r'[a-z][A-Za-z0-9_]*'
         token.type = self.reserved.get(token.value.lower(), 'ID')
@@ -117,6 +172,7 @@ class CoolPyLexer():
         r'\n+'
         token.lexer.lineno += len(token.value)
 
+    # Handling multi-line comments using states.
     @property
     def states(self):
         return (
@@ -155,6 +211,21 @@ class CoolPyLexer():
     t_ignore = ''.join([' ', '\t'])
 
     def build(self, **kwargs):
+        '''Builds the CoolPyLexer instance with lex.lex().
+
+        Paramters
+        ---------
+        debug : bool, optional
+            A flag to determine whether 'debug' mode should be on or not.
+        optimize : bool, optional
+            A flag to determine whether 'optimize' mode should be on or not.
+        outputdir : str, optional
+            Output directory for the lexer's output.
+        debuglog : str, optional
+            Path to the lexer's debug log. By default, the lexer logs to stderr.
+        errorlog : str, optional
+            Path to the lexer's error log. By default, the lexer logs to stderr.
+        '''
         if kwargs is None or len(kwargs) == 0:
             debug       = self._debug
             lextab      = self._lextab 
@@ -163,12 +234,12 @@ class CoolPyLexer():
             debuglog    = self._debuglog
             errorlog    = self._errorlog
         else:
-            debug       = kwargs.get("debug", self._debug)
-            lextab      = kwargs.get("lextab", self._lextab)
-            optimize    = kwargs.get("optimize", self._optimize)
-            outputdir   = kwargs.get("outputdir", self._outputdir)
-            debuglog    = kwargs.get("debuglog", self._debuglog)
-            errorlog    = kwargs.get("errorlog", self._errorlog)
+            debug       = kwargs.get('debug', self._debug)
+            lextab      = kwargs.get('lextab', self._lextab)
+            optimize    = kwargs.get('optimize', self._optimize)
+            outputdir   = kwargs.get('outputdir', self._outputdir)
+            debuglog    = kwargs.get('debuglog', self._debuglog)
+            errorlog    = kwargs.get('errorlog', self._errorlog)
     
         self.lexer = lex.lex(module     = self, 
                              lextab     = lextab, 
@@ -179,13 +250,21 @@ class CoolPyLexer():
                              errorlog   = errorlog)
 
     def input(self, source_code: str):
+        '''A wrapper for Lexer's input(source_code: str) method. Tokenizes Cool program 
+        provided as the input.
+
+        Parameters
+        ----------
+        source_code : str
+            The Cool program to be tokenized (as a string).
+        '''
         if self.lexer is None:
-            raise Exception("Lexer was not built. Try building the lexer with the build() method.")
+            raise Exception('Lexer was not built. Try building the lexer with the build() method.')
         self.lexer.input(source_code)
 
     def token(self):
         if self.lexer is None:
-            raise Exception("Lexer was not built. Try building the lexer with the build() method.")
+            raise Exception('Lexer was not built. Try building the lexer with the build() method.')
         self.last_token = self.lexer.token()
         return self.last_token
 
@@ -208,11 +287,11 @@ if __name__ == '__main__':
 
     import sys
     if len(sys.argv) != 2:
-        print("Usage: ./lexer.py program.cl")
+        print('Usage: python lexer.py program.cl')
         exit()
-    elif not str(sys.argv[1]).endswith(".cl"):
-        print("Source code files must end with .cl extension.")
-        print("Usage: ./lexer.py program.cl")
+    elif not str(sys.argv[1]).endswith('.cl'):
+        print('Source code files must end with .cl extension.')
+        print('Usage: python lexer.py program.cl')
         exit()
 
     input_file = sys.argv[1]
