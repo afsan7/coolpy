@@ -5,7 +5,7 @@ INTEGER_CLASS = "Int"
 BOOLEAN_CLASS = "Bool"
 STRING_CLASS = "String"
 
-
+import ast as AST
 
 
 class SemanticAnalysisError(Exception):
@@ -17,11 +17,11 @@ class SemanticAnalysisWarning(Warning):
 
 
 
-class PyCoolSemanticAnalyser(object):
+class CoolpySemanticAnalyser(object):
     def __init__(self):
         
         
-        super(PyCoolSemanticAnalyser, self).__init__()
+        super(CoolpySemanticAnalyser, self).__init__()
         
         # Initialize the internal program ast instance.
         self._program_ast = None
