@@ -1,6 +1,6 @@
 from ply import lex
 
-class CoolPyLexer():
+class CoolPyLexer:
     '''
     CoolPyLexer provides methods to tokenize the input Cool source code.
     
@@ -127,7 +127,7 @@ class CoolPyLexer():
     t_DIVIDE = r'\/'
     t_PLUS = r'\+'
     t_MINUS = r'\-'
-    t_INT_COMP = r'~'
+    t_INT_COMP = r'\~'
     t_LT = r'\<'
     t_EQ = r'\='
     t_LTEQ = r'\<\='
